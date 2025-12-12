@@ -124,7 +124,7 @@
 
 			function CheckPassword(value){
 				let regex = /^(?=.*[0-9])(?=.*[!@#$%^&?*\-_=])(?=.*[a-z])(?=.*[A-Z])[0-9a-z-A-Z!@#$%^&?*\-_=]{8,}$/;
-				return regxe.test(value);
+				return regex.test(value);
 			}
 			
 			function PressToEnter(e) {
