@@ -17,6 +17,7 @@
 	if($user_read = $query_user->fetch_row()) {
 		echo $id;
 	} else {
+		$password = password_hash($password, PASSWORD_DEFAULT);
 		$mysqli->query("INSERT INTO `users`(`login`, `password`, `roll`) VALUES ('".$login."', '".$password."', 0)");
 		
 		$query_user = $mysqli->query("SELECT * FROM `users` WHERE `login`='".$login."' AND `password`= '".$password."';");
