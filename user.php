@@ -1,19 +1,42 @@
 <?php
 	session_start();
 	include("./settings/connect_datebase.php");
-	
-	if (isset($_SESSION['user'])) {
-		if($_SESSION['user'] == -1) {
-			header("Location: login.php");
-		} else {
-			// проверяем пользователя, если админ выкидываем на админа
-			$user_to_query = $mysqli->query("SELECT `roll` FROM `users` WHERE `id` = ".$_SESSION['user']);
-			$user_to_read = $user_to_query->fetch_row();
-			
-			if($user_to_read[0] == 1) header("Location: login.php");
-		}
- 	} else header("Location: login.php");
-	
+	include("./settings/functions.php");
+
+	if (!isset($_SESSION['user']) || $_SESSION['user'] == -1) {
+		header("Location: login.php");
+		exit;
+	}
+
+	$user_id = $_SESSION['user'];
+
+	$stmt = $mysqli->prepare("SELECT `roll`, `session_token` FROM `users` WHERE `id` = ?");
+	$stmt->bind_param("i", $user_id);
+	$stmt->execute();
+	$result = $stmt->get_result();
+
+	if (!$result || $result->num_rows === 0) {
+		session_destroy();
+		header("Location: login.php?error=user_not_found");
+		exit;
+	}
+
+	$user_data = $result->fetch_assoc();
+	$roll = $user_data['roll'];
+	$db_session_token = $user_data['session_token'];
+
+	if ($roll == 1) {
+		header("Location: login.php?error=forbidden");
+		exit;
+	}
+
+	$current_session_token = $_SESSION['session_token'] ?? '';
+
+	if (!hash_equals($db_session_token ?: '', $current_session_token)) {
+		session_destroy();
+		header("Location: login.php?error=session_expired");
+		exit;
+	}
 ?>
 <!DOCTYPE HTML>
 <html>

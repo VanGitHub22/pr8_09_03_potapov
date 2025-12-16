@@ -57,6 +57,10 @@
 		</div>
 		
 		<script>
+			function CheckLogin(){
+				
+			}
+
 			function LogIn() {
 				var loading = document.getElementsByClassName("loading")[0];
 				var button = document.getElementsByClassName("button")[0];
@@ -83,16 +87,19 @@
 					contentType : false, 
 					// функция успешного ответа сервера
 					success: function (_data) {
-						console.log("Авторизация прошла успешно, id: " +_data);
-						if(_data == "") {
-							loading.style.display = "none";
-							button.className = "button";
-							alert("Логин или пароль не верный.");
+						console.log("Ответ сервера:", _data);
+						loading.style.display = "none";
+						button.className = "button";
+
+						if (_data.trim() === "") {
+							alert("Логин или пароль неверный.");
+						} else if (_data.trim() === "2FA_REQUIRED") {
+							// Перенаправляем на страницу ввода кода
+							window.location.href = "mail.php";
 						} else {
+							// Старый случай (если где-то остался md5) — для совместимости
 							localStorage.setItem("token", _data);
 							location.reload();
-							loading.style.display = "none";
-							button.className = "button";
 						}
 					},
 					// функция ошибки

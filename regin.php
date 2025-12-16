@@ -74,6 +74,11 @@
 					alert("Введите логин.")
 					return
 				}
+				const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+				if(!emailRegex.test(_login)) {
+					alert("Некорректный формат почты");
+					return;
+				}
 				if(_password == ""){
 					alert("Введите пароль.")
 					return
