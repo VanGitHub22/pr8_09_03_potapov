@@ -7,8 +7,8 @@
 			
 			$user_query = $mysqli->query("SELECT * FROM `users` WHERE `id` = ".$_SESSION['user']);
 			while($user_read = $user_query->fetch_row()) {
-				if($user_read[3] == 0) header("Location: user.php");
-				else if($user_read[3] == 1) header("Location: admin.php");
+				if($user_read[4] == 0) header("Location: user.php");
+				else if($user_read[4] == 1) header("Location: admin.php");
 			}
 		}
  	}

@@ -18,13 +18,18 @@
 		echo $id;
 	} else {
 		$password = password_hash($password, PASSWORD_DEFAULT);
-		$mysqli->query("INSERT INTO `users`(`login`, `password`, `roll`) VALUES ('".$login."', '".$password."', 0)");
+		$session_token = hash('sha256', uniqid($login . time(), true));
+		$mysqli->query("INSERT INTO `users`(`login`, `password`, `roll`, `password_changed_at`, `session_token`) VALUES ('".$login."', '".$password."', 0, NOW(), '".$session_token."')");
 		
 		$query_user = $mysqli->query("SELECT * FROM `users` WHERE `login`='".$login."' AND `password`= '".$password."';");
 		$user_new = $query_user->fetch_row();
 		$id = $user_new[0];
 			
-		if($id != -1) $_SESSION['user'] = $id; // запоминаем пользователя
+		if($id != -1) {
+			$_SESSION['user'] = $id;
+			$_SESSION['mail'] = $login;
+			$_SESSION['session_token'] = $session_token;
+		}
 		echo $id;
 	}
 ?>
