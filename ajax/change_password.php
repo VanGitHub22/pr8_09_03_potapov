@@ -2,16 +2,13 @@
 session_start();
 include("../settings/connect_datebase.php");
 
-// Проверяем: либо пользователь залогинен, либо у него истёкший пароль (временная сессия)
 if (!isset($_SESSION['user']) && !isset($_SESSION['password_expired_user'])) {
     echo "ERROR: Unauthorized";
     exit;
 }
 
-// Определяем user_id из временной или постоянной сессии
 $user_id = $_SESSION['user'] ?? $_SESSION['password_expired_user']['user_id'];
 
-// Проверяем, не истекла ли временная сессия
 if (!isset($_SESSION['user']) && isset($_SESSION['password_expired_user'])) {
     if ($_SESSION['password_expired_user']['expires'] < time()) {
         unset($_SESSION['password_expired_user']);

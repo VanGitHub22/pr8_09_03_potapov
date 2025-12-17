@@ -57,9 +57,12 @@
 		</div>
 		
 		<script>
-			function CheckLogin(){
-				
+			function CheckLogin(value){
+				let regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+				return regex.test(value);
 			}
+
+			
 
 			function LogIn() {
 				var loading = document.getElementsByClassName("loading")[0];
@@ -69,6 +72,11 @@
 				var _password = document.getElementsByName("_password")[0].value;
 				loading.style.display = "block";
 				button.className = "button_diactive";
+
+				if(CheckLogin(_login) == false){
+					alert("Логин должен быть почтой")
+					return
+				}
 				
 				var data = new FormData();
 				data.append("login", _login);
@@ -129,6 +137,7 @@
 					}
 				}
 			}
+
 			
 		</script>
 	</body>
