@@ -7,8 +7,8 @@
 			
 			$user_query = $mysqli->query("SELECT * FROM `users` WHERE `id` = ".$_SESSION['user']);
 			while($user_read = $user_query->fetch_row()) {
-				if($user_read[3] == 0) header("Location: user.php");
-				else if($user_read[3] == 1) header("Location: admin.php");
+				if($user_read[4] == 0) header("Location: user.php");
+				else if($user_read[4] == 1) header("Location: admin.php");
 			}
 		}
  	}
@@ -91,13 +91,19 @@
 						loading.style.display = "none";
 						button.className = "button";
 
-						if (_data.trim() === "") {
-							alert("Логин или пароль неверный.");
-						} else if (_data.trim() === "2FA_REQUIRED") {
-							// Перенаправляем на страницу ввода кода
+						const response = _data.trim();
+
+						if (response === "PASSWORD_EXPIRED") {
+							// Пароль истёк → перенаправляем на страницу смены пароля
+							window.location.href = "change_password.php?expired=1";
+						} else if (response === "2FA_REQUIRED") {
+							// 2FA прошла — идём на ввод кода
 							window.location.href = "mail.php";
+						} else if (response === "") {
+							// Неверные логин/пароль
+							alert("Логин или пароль неверный.");
 						} else {
-							// Старый случай (если где-то остался md5) — для совместимости
+							// Совместимость со старым (md5/токен) — оставь, если нужно
 							localStorage.setItem("token", _data);
 							location.reload();
 						}
